@@ -1,28 +1,23 @@
 require('./config/config.js')
-const express = require('express')
+const express = require('express');
+// Using Node.js `require()`
+const mongoose = require('mongoose');
+
+
 const app = express();
 const bodyParser = require('body-parser'); // se usa para obtener objetos que vengan en la peticion
 
 // parse application/x-www-form-urlencoded son funciones
-app.use(bodyParser.urlencoded({ extended: false })) // se usa para obtener objetos que vengan en la peticion
-    // parse application/json son funciones
-app.use(bodyParser.json()) // se usa para obtener objetos que vengan en la peticion
+app.use(bodyParser.urlencoded({ extended: false })); // se usa para obtener objetos que vengan en la peticion
+// parse application/json son funciones
+app.use(bodyParser.json()); // se usa para obtener objetos que vengan en la peticion
+// llama las rutas creadas
+app.use(require('./routes/usuario'));
+mongoose.set('useFindAndModify', false);
+//mongoose.connect('mongodb://localhost:27017/cafe', { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true })
+mongoose.connect(process.env.URLDB, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true })
+    .then(() => { console.log('Connected to Mongo!!'); })
+    .catch((error) => { console.log('Error connecting to Mongo', error); });
 
-app.get('/usuario', function(req, res) {
-    res.json('get usuario');
-});
 
-app.post('/usuario', function(req, res) {
-    let body = req.body; // se obtiene el objeto que viene en peticion
-    res.json({ persona: body });
-});
-
-app.put('/usuario/:id', function(req, res) {
-    let id = req.params.id; // se obtiene el parametro que viene por URL, id
-    res.json('put usuario' + id);
-});
-
-app.delete('/usuario', function(req, res) {
-    res.json('delete usuario');
-});
 app.listen(process.env.PORT, () => console.log('Escuchando el puerto: ', 3000));
