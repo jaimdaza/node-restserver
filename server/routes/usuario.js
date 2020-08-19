@@ -2,9 +2,10 @@ const express = require('express');
 const bcrypt = require('bcrypt'); // codificar la contraseña
 const _ = require('underscore');
 const Usuario = require('../models/usuario');
+const { verificaToken, verificaAdmin_role } = require('../middlewares/authentication');
 const app = express();
 
-app.get('/usuario', function(req, res) {
+app.get('/usuario', verificaToken, function(req, res) {
     let desde = req.query.desde || 0;
     desde = Number(desde);
     let limite = Number(req.query.limite) || 5;
@@ -29,7 +30,7 @@ app.get('/usuario', function(req, res) {
         });
 });
 
-app.post('/usuario', function(req, res) {
+app.post('/usuario', [verificaToken, verificaAdmin_role], function(req, res) {
     let body = req.body; // se obtiene el objeto que viene en peticion
     let usuario = new Usuario({
         nombre: body.nombre,
@@ -53,7 +54,7 @@ app.post('/usuario', function(req, res) {
     });
 });
 
-app.put('/usuario/:id', function(req, res) {
+app.put('/usuario/:id', [verificaToken, verificaAdmin_role], function(req, res) {
     let id = req.params.id; // se obtiene el parametro que viene por URL, id
     let body = _.pick(req.body, ['nombre', 'email', 'img', 'role', 'estado']); // es para indicar que voy actualizar
     Usuario.findOneAndUpdate(id, body, { new: true, runValidators: true, context: 'query' }, (err, usuarioDB) => {
@@ -98,7 +99,7 @@ app.put('/usuario/:id', function(req, res) {
 
 }); */
 
-app.delete('/usuario/:id', function(req, res) {
+app.delete('/usuario/:id', [verificaToken, verificaAdmin_role], function(req, res) {
     let id = req.params.id;
     let estado = {
         estado: false
