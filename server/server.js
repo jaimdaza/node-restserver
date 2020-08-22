@@ -2,7 +2,8 @@ require('./config/config.js')
 const express = require('express');
 // Using Node.js `require()`
 const mongoose = require('mongoose');
-
+// para url publica
+const path = require('path')
 
 const app = express();
 const bodyParser = require('body-parser'); // se usa para obtener objetos que vengan en la peticion
@@ -17,6 +18,8 @@ app.use(require('./routes/login'));*/
 // se comenta anterio y se deja una sola configuracion global
 app.use(require('./routes/index'));
 
+///// Habilitar carpeta public
+app.use(express.static(path.resolve(__dirname, '../public')));
 
 mongoose.set('useFindAndModify', false);
 //mongoose.connect('mongodb://localhost:27017/cafe', { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true })
