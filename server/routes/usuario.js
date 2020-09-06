@@ -19,7 +19,7 @@ app.get('/usuario', verificaToken, function(req, res) {
                     err
                 });
             }
-            Usuario.count({ estado: true }, (err, conteo) => { // {} van filtros ejmplo google : true
+            Usuario.countDocuments({ estado: true }, (err, conteo) => { // {} van filtros ejmplo google : true
                 return res.json({
                     ok: true,
                     usuarios,
